@@ -52,7 +52,8 @@ export default class {
               }
             }
           })
-          console.log('length', bills.length)
+        console.log('length', bills.length)
+        console.log('files ===', bills.map(bill => bill.fileName));
         return bills
       })
     }
