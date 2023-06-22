@@ -1,8 +1,11 @@
 {
 	"folders": [
 		{
-			"name": "bill-app",
-			"path": "../../.."
+			"path": ".."
+		},
+		{
+			"name": "Billed-app-FR-Front",
+			"path": "."
 		}
 	],
 	"settings": {
@@ -15,8 +18,7 @@
 			}
 		],
 		"jest.disabledWorkspaceFolders": [
-			"bill-app",
-			"Billed-app-FR-Back "
+			"bill-app"
 		]
 	}
 }
