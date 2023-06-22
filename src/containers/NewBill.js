@@ -15,11 +15,28 @@ export default class NewBill {
     this.billId = null
     new Logout({ document, localStorage, onNavigate })
   }
-  handleChangeFile = e => {
+  handleChangeFile = (e) => {
     e.preventDefault()
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
     const filePath = e.target.value.split(/\\/g)
-    const fileName = filePath[filePath.length-1]
+    const fileName = filePath[filePath.length - 1]
+    
+    // Vérifier l'extension du fichier
+    const allowedExtensions = ["png", "jpg", "jpeg"];
+    const fileExtension = fileName.split(".").pop().toLowerCase();
+    if (!allowedExtensions.includes(fileExtension)) {
+    console.log("Invalid file extension");
+    const errorMessage = document.createElement('span');
+    errorMessage.textContent = "Attention vous devez entrer un fichier png, jpg ou jpeg.";
+      errorMessage.classList.add('error-message');
+      errorMessage.style.color = "red";
+    const inputFile = this.document.querySelector(`input[data-testid="file"]`);
+    inputFile.parentNode.insertBefore(errorMessage, inputFile.nextSibling);
+    // alert("Attention vous devez entrer un fichier png, jpg ou jpeg");
+    file.value = "";
+    return; 
+    }
+    
     const formData = new FormData()
     const email = JSON.parse(localStorage.getItem("user")).email
     formData.append('file', file)

@@ -2,6 +2,14 @@
 	"folders": [
 		{
 			"path": ".."
+		},
+		{
+			"name": "Billed-app-FR-Front",
+			"path": "."
+		},
+		{
+			"name": "Billed-app-FR-Back ",
+			"path": "../Billed-app-FR-Back "
 		}
 	],
 	"settings": {

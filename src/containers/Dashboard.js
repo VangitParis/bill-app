@@ -166,6 +166,7 @@ export default class {
           date: doc.date,
           status: doc.status
         }))
+        
         return bills
       })
       .catch(error => {
