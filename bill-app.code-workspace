@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"sqltools.connections": [
+			{
+				"previewLimit": 50,
+				"driver": "SQLite",
+				"name": "database",
+				"database": "${workspaceFolder:bill-app}/Billed-app-FR-Back/database_dev.sqlite"
+			}
+		],
+		"jest.disabledWorkspaceFolders": [
+			"bill-app",
+			"Billed-app-FR-Back"
+		]
+	}
+}
