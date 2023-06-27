@@ -159,7 +159,7 @@ export default class {
       $(`#arrow-icon${this.index}`).css({ transform: "rotate(90deg)" });
       $(`#status-bills-container${this.index}`).html("");
     }
-    console.log(typeof bills); //Object
+    // console.log(typeof bills); //Object
     bills.forEach((bill) => {
       console.log(index);
       $(`#open-bill${bill.id}`).click((e) =>
