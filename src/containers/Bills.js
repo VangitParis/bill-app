@@ -26,6 +26,7 @@ export default class {
 
   handleClickIconEye = (icon) => {
     const billUrl = icon.getAttribute("data-bill-url");
+    console.log(billUrl);
     const imgWidth = Math.floor($("#modaleFile").width() * 0.5);
     $("#modaleFile")
       .find(".modal-body")
@@ -71,7 +72,7 @@ export default class {
           console.log("length", bills.length);
           console.log(
             "files ===",
-            bills.map((bill) => bill.fileName)
+            bills.map((bill) => bill.fileUrl)
           );
           // return bills
           return sortedBills;

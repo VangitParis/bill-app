@@ -22,7 +22,7 @@ export default class NewBill {
     const fileName = filePath[filePath.length - 1]
     
     // Vérifier l'extension du fichier
-    const allowedExtensions = ["png", "jpg", "jpeg"];
+    const allowedExtensions = ["png", "jpg", "jpeg", "gif"];
     const fileExtension = fileName.split(".").pop().toLowerCase();
     if (!allowedExtensions.includes(fileExtension)) {
     console.log("Invalid file extension");
@@ -51,7 +51,6 @@ export default class NewBill {
         }
       })
       .then(({fileUrl, key}) => {
-        console.log(fileUrl)
         this.billId = key
         this.fileUrl = fileUrl
         this.fileName = fileName

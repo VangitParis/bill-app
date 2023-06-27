@@ -80,11 +80,17 @@ export default class {
 
   handleClickIconEye = () => {
     const billUrl = $('#icon-eye-d').attr("data-bill-url")
-    const imgWidth = Math.floor($('#modaleFileAdmin1').width() * 0.8)
-    $('#modaleFileAdmin1').find(".modal-body").html(`<div style='text-align: center;'><img width=${imgWidth} src=${billUrl} alt="Bill"/></div>`)
-    if (typeof $('#modaleFileAdmin1').modal === 'function') $('#modaleFileAdmin1').modal('show')
+    console.log(billUrl);
+    // Vérifier si billUrl est null
+    if (billUrl === `http://localhost:5678/null`) {
+      
+      return 
+    } else {
+      const imgWidth = Math.floor($('#modaleFileAdmin1').width() * 0.8)
+      $('#modaleFileAdmin1').find(".modal-body").html(`<div style='text-align: center;'><img width=${ imgWidth } src=${ billUrl } alt="Bill"/></div>`)
+      if (typeof $('#modaleFileAdmin1').modal === 'function') $('#modaleFileAdmin1').modal('show')
+    }
   }
-
   handleEditTicket(e, bill, bills) {
     if (this.counter === undefined || this.id !== bill.id) this.counter = 0
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id
