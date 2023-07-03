@@ -14,7 +14,7 @@ export const filteredBills = (data, status) => {
         if (typeof jest !== "undefined") {
           selectCondition = bill.status === status;
         } else {
-          /* istanbul ignore next */
+        /* istanbul ignore next */
           // in prod environment
           const userEmail = JSON.parse(localStorage.getItem("user")).email;
           selectCondition =
@@ -76,6 +76,7 @@ export default class {
     this.document = document;
     this.onNavigate = onNavigate;
     this.store = store;
+    this.selectedBillId = null;
     $("#arrow-icon1").click((e) => this.handleShowTickets(e, bills, 1));
     $("#arrow-icon2").click((e) => this.handleShowTickets(e, bills, 2));
     $("#arrow-icon3").click((e) => this.handleShowTickets(e, bills, 3));
@@ -100,9 +101,10 @@ export default class {
     }
   };
   handleEditTicket(e, bill, bills) {
-
-    if (this.counter === undefined || this.id !== bill.id) this.counter = 0;
-    if (this.id === undefined || this.id !== bill.id) this.id = bill.id;
+    if (this.counter === undefined || this.id !== bill.id) { this.counter = 0 };
+    if (this.id === undefined && this.id !== bill.id) { // on entre bien dans la condition avec l'opérateur && à la place de || 
+      this.id = bill.id
+    }; 
     if (this.counter % 2 === 0) {
       bills.forEach((b) => {
         $(`#open-bill${b.id}`).css({ background: "#0D5AE5" });
@@ -110,8 +112,8 @@ export default class {
       $(`#open-bill${bill.id}`).css({ background: "#2A2B35" });
       $(".dashboard-right-container div").html(DashboardFormUI(bill));
       $(".vertical-navbar").css({ height: "150vh" });
-      // this.counter++;
-      console.log(this.counter);
+      this.counter++;
+     
     } else {
       $(`#open-bill${bill.id}`).css({ background: "#0D5AE5" });
 
@@ -119,12 +121,12 @@ export default class {
         <div id="big-billed-icon" data-testid="big-billed-icon"> ${BigBilledIcon} </div>
       `);
       $(".vertical-navbar").css({ height: "120vh" });
-      // this.counter++;
+      this.counter++;
     }
     $("#icon-eye-d").click(this.handleClickIconEye);
     $("#btn-accept-bill").click((e) => this.handleAcceptSubmit(e, bill));
     $("#btn-refuse-bill").click((e) => this.handleRefuseSubmit(e, bill));
-    
+ 
   }
 
   handleAcceptSubmit = (e, bill) => {
@@ -161,11 +163,17 @@ export default class {
       $(`#arrow-icon${this.index}`).css({ transform: "rotate(90deg)" });
       $(`#status-bills-container${this.index}`).html("");
     }
+   
     bills.forEach((bill) => {
-      $(`#open-bill${bill.id}`).click((e) =>
-        this.handleEditTicket(e, bill, bills)
-      );
+      $(`#open-bill${ bill.id }`).click((e) => {
+        e.preventDefault()
+        console.log("this.id=",this.id, "::::", "bill.id=",bill.id, "index=", index);
+        this.handleEditTicket(e, bill, bills);
+        // console.log(index);// l'index est bien modifié
+        // console.log(bill.id);// l'id reste le meme 
+      });
     });
+    
 
     return bills;
   }
