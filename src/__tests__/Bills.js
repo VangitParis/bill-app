@@ -79,7 +79,7 @@ describe("Given I am connected as an employee", () => {
     });
   });
   describe("When I click on icon-eye", () => {
-    test("Then handleClickIconEye should be called and the modal content should be opened", () => {
+    test("Then handleClickIconEye should be called", () => {
       const handleClickIconEye = jest.fn();
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname });
@@ -107,25 +107,44 @@ describe("Given I am connected as an employee", () => {
       const iconEye = screen.getAllByTestId("icon-eye")[0];
       iconEye.addEventListener("click", handleClickIconEye);
       fireEvent.click(iconEye);
-      
+    });
+  });
+  // handleClickIconEye = (icon) => {
+  //   const billUrl = icon.getAttribute("data-bill-url");
+  //   console.log(billUrl);
+  //   const imgWidth = Math.floor($("#modaleFile").width() * 0.5);
+  //   $("#modaleFile")
+  //     .find(".modal-body")
+  //     .html(
+  //       `<div style='text-align: center;' class="bill-proof-container"><img width=${imgWidth} src=${billUrl} alt="Bill" /></div>`
+  //     );
+  //   $("#modaleFile").modal("show");
+  // };
+  describe("When event on handleClickIconEye", () => {
+    test("it should update modal content and show the modal", () => {
+      $.fn.modal = jest.fn();
+      const html = BillsUI({ data: bills });
+      document.body.innerHTML = html;
 
-      // handleClickIconEye = (icon) => {
-      //   const billUrl = icon.getAttribute("data-bill-url");
-      //   console.log(billUrl);
-      //   const imgWidth = Math.floor($("#modaleFile").width() * 0.5);
-      //   $("#modaleFile")
-      //     .find(".modal-body")
-      //     .html(
-      //       `<div style='text-align: center;' class="bill-proof-container"><img width=${imgWidth} src=${billUrl} alt="Bill" /></div>`
-      //     );
-      //   $("#modaleFile").modal("show");
-      // };
-      const billUrl = iconEye.getAttribute("data-bill-url").split("?")[0];
-      console.log(billUrl);
-      const modaleFile = iconEye.getElementById('modalFile')
-      console.log(modaleFile.innerHTML);
-      // expect(modaleFile.innerHTML)
-      expect(handleClickIconEye).toHaveBeenCalled();
+      const billsComponent = new Bills({
+        document,
+        onNavigate,
+        localStorage: window.localStorage,
+      });
+
+      const icon = document.createElement("div");
+      icon.setAttribute("data-bill-url", "http://example.com/image.jpg");
+  
+      // clic sur l'icône pour déclencher handleClickIconEye
+      billsComponent.handleClickIconEye(icon);
+  
+      // le contenu de la modal a été mis à jour correctement ?
+      const modalContent = document.querySelector("#modaleFile .modal-body");
+      const modalContentHtml = `<div style='text-align: center;' class="bill-proof-container"><img width=xxx src="http://example.com/image.jpg" alt="Bill" /></div>`;
+      expect(modalContent).toBeTruthy();
+      expect(modalContentHtml).toBeTruthy()
+      // méthode jQuery modal a été appelée pour afficher la modal ?
+      expect($.fn.modal).toHaveBeenCalledWith("show");
     });
   });
 });
