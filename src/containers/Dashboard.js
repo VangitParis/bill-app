@@ -102,7 +102,7 @@ export default class {
   };
   handleEditTicket(e, bill, bills) {
     if (this.counter === undefined || this.id !== bill.id) { this.counter = 0 };
-    if (this.id === undefined && this.id !== bill.id) { // on entre bien dans la condition avec l'opérateur && à la place de || 
+    if (this.id === undefined || this.id !== bill.id) { 
       this.id = bill.id
     }; 
     if (this.counter % 2 === 0) {
@@ -164,15 +164,13 @@ export default class {
       $(`#status-bills-container${this.index}`).html("");
     }
    
-    bills.forEach((bill) => {
-      $(`#open-bill${ bill.id }`).click((e) => {
-        e.preventDefault()
-        console.log("this.id=",this.id, "::::", "bill.id=",bill.id, "index=", index);
-        this.handleEditTicket(e, bill, bills);
-        // console.log(index);// l'index est bien modifié
-        // console.log(bill.id);// l'id reste le meme 
-      });
-    });
+    const currentBills = filteredBills(bills, getStatus(this.index));
+		currentBills.forEach((bill) => {
+			$(`#open-bill${bill.id}`)
+				.off("click")
+				.on("click", (e) => this.handleEditTicket(e, bill, bills));
+		});
+    
     
 
     return bills;
