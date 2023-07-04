@@ -164,8 +164,8 @@ export default class {
       $(`#status-bills-container${this.index}`).html("");
     }
    
-    const currentBills = filteredBills(bills, getStatus(this.index));
-		currentBills.forEach((bill) => {
+    const currentBillsFilter = filteredBills(bills, getStatus(this.index));
+		currentBillsFilter.forEach((bill) => {
 			$(`#open-bill${bill.id}`)
 				.off("click")
 				.on("click", (e) => this.handleEditTicket(e, bill, bills));
