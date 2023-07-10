@@ -32,7 +32,8 @@ export default class NewBill {
 
   handleChangeFile = (e) => {
     e.preventDefault();
-    const file = document.querySelector(`input[data-testid="file"]`);
+    const file = document.querySelector(`input[data-testid="file"]`).files[0];
+    
     const filePath = e.target.value.split(/\\/g);
     const fileName = filePath[filePath.length - 1];
 
@@ -44,7 +45,7 @@ export default class NewBill {
       console.error("Invalid file extension");
       const errorMessage = document.createElement("span");
       errorMessage.textContent =
-        "Attention vous devez entrer un fichier png, jpg, jpeg ou gif."; // TODO
+        "Attention vous devez entrer un fichier png, jpg, jpeg ou gif."; 
       errorMessage.classList.add("error-message");
       errorMessage.style.color = "red";
       const inputFile = document.querySelector(
@@ -54,13 +55,11 @@ export default class NewBill {
       file.value = "";
       return;
     } 
-
     const formData = new FormData();
     const email = JSON.parse(localStorage.getItem("user")).email;
     formData.append("file", file);
     formData.append("email", email);
-    
-
+   
     this.store
       .bills()
       .create({
@@ -70,9 +69,9 @@ export default class NewBill {
         },
       })
       .then(({ fileUrl, key }) => {
-        this.billId = key;
-        this.fileUrl = fileUrl;
-        this.fileName = fileName;
+          this.billId = key;
+          this.fileUrl = fileUrl;
+          this.fileName = fileName;
       })
       .catch((error) => (error));
   };
