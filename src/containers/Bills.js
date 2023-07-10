@@ -46,7 +46,6 @@ export default class {
             try {
               return {
                 ...doc,
-                // date: formatDate(doc.date)
                 date: new Date(doc.date), 
                 status: formatStatus(doc.status),
               };
@@ -56,7 +55,7 @@ export default class {
               console.log(e, "for", doc);
               return {
                 ...doc,
-                date: doc.date,
+                date: formatDate(doc.date),
                 status: formatStatus(doc.status),
               };
             }
@@ -69,11 +68,6 @@ export default class {
           sortedBills.forEach((bill) => {
             bill.date = formatDate(bill.date);
           });
-          console.log("length", bills.length);
-          console.log(
-            "files ===",
-            bills.map((bill) => bill.fileUrl)
-          );
           // return bills
           return sortedBills;
         });

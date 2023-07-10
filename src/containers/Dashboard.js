@@ -164,13 +164,15 @@ export default class {
       $(`#status-bills-container${this.index}`).html("");
     }
    
-    const currentBillsFilter = filteredBills(bills, getStatus(this.index));
-		currentBillsFilter.forEach((bill) => {
-			$(`#open-bill${bill.id}`)
-				.off("click")
-				.on("click", (e) => this.handleEditTicket(e, bill, bills));
-		});
-    
+    bills.forEach((bill) => {
+      $(`#open-bill${ bill.id }`).click((e) => {
+        e.preventDefault()
+        console.log("this.id=",this.id, "::::", "bill.id=",bill.id, "index=", index);
+        this.handleEditTicket(e, bill, bills);
+        // console.log(index);// l'index est bien modifié
+        // console.log(bill.id);// l'id reste le meme 
+      });
+    });
     
 
     return bills;

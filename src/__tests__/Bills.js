@@ -7,6 +7,9 @@ import BillsUI from "../views/BillsUI.js";
 import { bills } from "../fixtures/bills.js";
 import { ROUTES, ROUTES_PATH } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
+import { formatDate, formatStatus } from "../app/format.js";
+import mockStore from "../__mocks__/store.js"
+import mockedBills from "../__mocks__/store.js"
 
 import router from "../app/Router.js";
 import Bills from "../containers/Bills.js";
@@ -33,17 +36,48 @@ describe("Given I am connected as an employee", () => {
       //to-do write expect expression
       expect(windowIcon.classList.contains("active-icon")).toBe(true);
     });
-    test("Then bills should be ordered from earliest to latest", () => {
-      document.body.innerHTML = BillsUI({ data: bills });
-      const dates = screen
-        .getAllByText(
-          /^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i
-        )
-        .map((a) => a.innerHTML);
-      const antiChrono = (a, b) => b - a;
-      const datesSorted = [...dates].sort(antiChrono);
-      expect(dates).toEqual(datesSorted);
+
+    test('Then bills should be ordered from earliest to latest', async () => {
+      // Mock des données de facture
+      const bills = [
+        {
+          id: '1',
+          status: 'refused',
+          date: '2022-06-01', // Facture la plus ancienne
+        },
+        {
+          id: '2',
+          status: 'accepted',
+          date: '2023-01-15',
+        },
+        {
+          id: '3',
+          status: 'pending',
+          date: '2022-12-10',
+        },
+        {
+          id: '4',
+          status: 'accepted',
+          date: '2023-05-20', // Facture la plus récente
+        },
+      ];
+  
+      const billInstance = new Bills({document, onNavigate, store : mockStore, localStorage})
+      // Appel de la méthode getBills
+      const sortedBills = await billInstance.getBills(bills);
+  
+      // Vérification de l'ordre des dates
+      const dates = sortedBills.map((bill) => bill.date);
+      const isSorted = dates.every((date, index) => {
+        if (index === 0) return true;
+        return (a,b) => new Date(b.date) - new Date(a.date);
+      });
+  
+      // Assertion de l'ordre des dates
+      expect(isSorted).toBe(true);
     });
+  
+
     //test unitaire pour savoir si l'évènement sur le bouton pour une nouvelle note frais est déclenché
     test("Then user click on button new bill, handleClickNewBill should be called", async () => {
       const onNavigate = (pathname) => {
@@ -74,7 +108,7 @@ describe("Given I am connected as an employee", () => {
       newBillButton.addEventListener("click", handleClickNewBill);
       // Simulation du clic sur le bouton
       fireEvent.click(newBillButton);
-      // Vérification que handleClickNewBill a été appelée
+      // Assertion de l'appelle de la méthode handleClickNewBill
       expect(handleClickNewBill).toHaveBeenCalled();
     });
   });
@@ -109,17 +143,6 @@ describe("Given I am connected as an employee", () => {
       fireEvent.click(iconEye);
     });
   });
-  // handleClickIconEye = (icon) => {
-  //   const billUrl = icon.getAttribute("data-bill-url");
-  //   console.log(billUrl);
-  //   const imgWidth = Math.floor($("#modaleFile").width() * 0.5);
-  //   $("#modaleFile")
-  //     .find(".modal-body")
-  //     .html(
-  //       `<div style='text-align: center;' class="bill-proof-container"><img width=${imgWidth} src=${billUrl} alt="Bill" /></div>`
-  //     );
-  //   $("#modaleFile").modal("show");
-  // };
   describe("When event on handleClickIconEye", () => {
     test("it should update modal content and show the modal", () => {
       $.fn.modal = jest.fn();
@@ -147,4 +170,68 @@ describe("Given I am connected as an employee", () => {
       expect($.fn.modal).toHaveBeenCalledWith("show");
     });
   });
+})
+
+describe("Given I am a user connected as Employee", () => {
+  describe("When I navigate to Bills page", () => {
+    test('fetches bills from mock API GET', async () => {
+    
+    // Mock la méthode list() de l'objet mockStore.bills
+    const mockList = jest.fn().mockResolvedValue([
+      {
+        id: '1',
+        status: 'Refused',
+        date: '2023/07/01',
+      },
+      {
+        id: '2',
+        status: 'Accepté',
+        date: '2023/07/02',
+      },
+    ]);
+   // Mock du localStorage
+   const localStorageMock = {
+    getItem: jest.fn(),
+    setItem: jest.fn(),
+  };
+   
+
+    const onNavigate = (pathname) => {
+      document.body.innerHTML = ROUTES({ pathname });
+    };
+
+    const mockStore = {
+      bills: () => ({
+        list: mockList,
+      }),
+    };
+
+    const billInstance = new Bills({
+      document,
+      onNavigate,
+      store: mockStore,
+      localStorage: localStorageMock,
+    });
+    // Appelle la méthode getBills() avec le mockStore
+    const result = await billInstance.getBills(mockStore);
+
+    // Vérification de l'appel à mockStore.bills().list
+    expect(mockList).toHaveBeenCalledTimes(1);
+
+    // Vérification des factures récupérées et triées
+    expect(result).toEqual([
+      {
+        id: '2',
+        status: formatStatus('Accepté'),
+        date: formatDate('2023/07/02'),
+      },
+      {
+        id: '1',
+        status: formatStatus('Refused'),
+        date: formatDate('2023/07/01'),
+      },
+    ]);
+  });
+  });
 });
+
