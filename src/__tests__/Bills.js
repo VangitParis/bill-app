@@ -8,8 +8,8 @@ import { bills } from "../fixtures/bills.js";
 import { ROUTES, ROUTES_PATH } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import { formatDate, formatStatus } from "../app/format.js";
-import mockStore from "../__mocks__/store.js"
-import mockedBills from "../__mocks__/store.js"
+import mockStore from "../__mocks__/store.js";
+import mockedBills from "../__mocks__/store.js";
 
 import router from "../app/Router.js";
 import Bills from "../containers/Bills.js";
@@ -37,46 +37,50 @@ describe("Given I am connected as an employee", () => {
       expect(windowIcon.classList.contains("active-icon")).toBe(true);
     });
 
-    test('Then bills should be ordered from earliest to latest', async () => {
+    test("Then bills should be ordered from earliest to latest", async () => {
       // Mock des données de facture
       const bills = [
         {
-          id: '1',
-          status: 'refused',
-          date: '2022-06-01', // Facture la plus ancienne
+          id: "1",
+          status: "refused",
+          date: "2022-06-01", // Facture la plus ancienne
         },
         {
-          id: '2',
-          status: 'accepted',
-          date: '2023-01-15',
+          id: "2",
+          status: "accepted",
+          date: "2023-01-15",
         },
         {
-          id: '3',
-          status: 'pending',
-          date: '2022-12-10',
+          id: "3",
+          status: "pending",
+          date: "2022-12-10",
         },
         {
-          id: '4',
-          status: 'accepted',
-          date: '2023-05-20', // Facture la plus récente
+          id: "4",
+          status: "accepted",
+          date: "2023-05-20", // Facture la plus récente
         },
       ];
-  
-      const billInstance = new Bills({document, onNavigate, store : mockStore, localStorage})
+
+      const billInstance = new Bills({
+        document,
+        onNavigate,
+        store: mockStore,
+        localStorage,
+      });
       // Appel de la méthode getBills
       const sortedBills = await billInstance.getBills(bills);
-  
+
       // Vérification de l'ordre des dates
       const dates = sortedBills.map((bill) => bill.date);
       const isSorted = dates.every((date, index) => {
         if (index === 0) return true;
-        return (a,b) => new Date(b.date) - new Date(a.date);
+        return (a, b) => new Date(b.date) - new Date(a.date);
       });
-  
+
       // Assertion de l'ordre des dates
       expect(isSorted).toBe(true);
     });
-  
 
     //test unitaire pour savoir si l'évènement sur le bouton pour une nouvelle note frais est déclenché
     test("Then user click on button new bill, handleClickNewBill should be called", async () => {
@@ -144,7 +148,7 @@ describe("Given I am connected as an employee", () => {
     });
   });
   describe("When event on handleClickIconEye", () => {
-    test("it should update modal content and show the modal", () => {
+    test("Then it should update modal content and show the modal", () => {
       $.fn.modal = jest.fn();
       const html = BillsUI({ data: bills });
       document.body.innerHTML = html;
@@ -157,81 +161,110 @@ describe("Given I am connected as an employee", () => {
 
       const icon = document.createElement("div");
       icon.setAttribute("data-bill-url", "http://example.com/image.jpg");
-  
+
       // clic sur l'icône pour déclencher handleClickIconEye
       billsComponent.handleClickIconEye(icon);
-  
+
       // le contenu de la modal a été mis à jour correctement ?
       const modalContent = document.querySelector("#modaleFile .modal-body");
       const modalContentHtml = `<div style='text-align: center;' class="bill-proof-container"><img width=xxx src="http://example.com/image.jpg" alt="Bill" /></div>`;
       expect(modalContent).toBeTruthy();
-      expect(modalContentHtml).toBeTruthy()
+      expect(modalContentHtml).toBeTruthy();
       // méthode jQuery modal a été appelée pour afficher la modal ?
       expect($.fn.modal).toHaveBeenCalledWith("show");
     });
   });
-})
+});
 
 describe("Given I am a user connected as Employee", () => {
   describe("When I navigate to Bills page", () => {
-    test('fetches bills from mock API GET', async () => {
-    
-    // Mock la méthode list() de l'objet mockStore.bills
-    const mockList = jest.fn().mockResolvedValue([
-      {
-        id: '1',
-        status: 'Refused',
-        date: '2023/07/01',
-      },
-      {
-        id: '2',
-        status: 'Accepté',
-        date: '2023/07/02',
-      },
-    ]);
-   // Mock du localStorage
-   const localStorageMock = {
-    getItem: jest.fn(),
-    setItem: jest.fn(),
-  };
-   
+    test("fetches bills from mock API GET", async () => {
+      // Mock la méthode list() de l'objet mockStore.bills
+      const mockList = jest.fn().mockResolvedValue([
+        {
+          id: "1",
+          status: "refused",
+          date: "2023/07/01",
+        },
+        {
+          id: "2",
+          status: "accepted",
+          date: "2023/07/02",
+        },
+      ]);
+      // Mock du localStorage
+      const localStorageMock = {
+        getItem: jest.fn(),
+        setItem: jest.fn(),
+      };
 
-    const onNavigate = (pathname) => {
-      document.body.innerHTML = ROUTES({ pathname });
-    };
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      };
 
-    const mockStore = {
-      bills: () => ({
-        list: mockList,
-      }),
-    };
+      const mockStore = {
+        bills: () => ({
+          list: mockList,
+        }),
+      };
 
-    const billInstance = new Bills({
-      document,
-      onNavigate,
-      store: mockStore,
-      localStorage: localStorageMock,
+      const billInstance = new Bills({
+        document,
+        onNavigate,
+        store: mockStore,
+        localStorage: localStorageMock,
+      });
+      // Appelle la méthode getBills() avec le mockStore
+      const result = await billInstance.getBills(mockStore);
+
+      // Vérification de l'appel à mockStore.bills().list
+      expect(mockList).toHaveBeenCalledTimes(1);
+
+      // Vérification des factures récupérées : formatées et triées
+      expect(result).toEqual([
+        {
+          id: "2",
+          status: formatStatus("accepted"),
+          date: formatDate("2023/07/02"),
+        },
+        {
+          id: "1",
+          status: formatStatus("refused"),
+          date: formatDate("2023/07/01"),
+        },
+      ]);
     });
-    // Appelle la méthode getBills() avec le mockStore
-    const result = await billInstance.getBills(mockStore);
-
-    // Vérification de l'appel à mockStore.bills().list
-    expect(mockList).toHaveBeenCalledTimes(1);
-
-    // Vérification des factures récupérées et triées
-    expect(result).toEqual([
-      {
-        id: '2',
-        status: formatStatus('Accepté'),
-        date: formatDate('2023/07/02'),
-      },
-      {
-        id: '1',
-        status: formatStatus('Refused'),
-        date: formatDate('2023/07/01'),
-      },
-    ]);
-  });
+    describe("When an error occurs on API", () => {
+      beforeEach(() => {
+        jest.spyOn(mockStore, "bills");
+        Object.defineProperty(window, "localStorage", {
+          value: localStorageMock,
+        });
+        window.localStorage.setItem(
+          "user",
+          JSON.stringify({
+            type: "Employee",
+            email: "e@e",
+          })
+        );
+        const root = document.createElement("div");
+        root.setAttribute("id", "root");
+        document.body.appendChild(root);
+        router();
+      });
+      test("fetches bills from an API and fails with 404 message error", async () => {
+        mockStore.bills.mockImplementationOnce(() => {
+          return {
+            list: () => {
+              return Promise.reject(new Error("Erreur 404"));
+            },
+          };
+        });
+        window.onNavigate(ROUTES_PATH.Bills);
+        await new Promise(process.nextTick);
+        const message = await screen.getByText(/Erreur 404/);
+        expect(message).toBeTruthy();
+      });
+    });
   });
 });
-

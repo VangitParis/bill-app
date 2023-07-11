@@ -5,6 +5,13 @@ import { ROUTES_PATH } from "../constants/routes.js";
 import USERS_TEST from "../constants/usersTest.js";
 import Logout from "./Logout.js";
 
+/**
+ * 
+ * @param {*} data 
+ * @param {*} status 
+ * @returns 
+ */
+
 export const filteredBills = (data, status) => {
   return data && data.length
     ? data.filter((bill) => {
@@ -102,7 +109,7 @@ export default class {
   };
   handleEditTicket(e, bill, bills) {
     if (this.counter === undefined || this.id !== bill.id) { this.counter = 0 };
-    if (this.id === undefined && this.id !== bill.id) { // on entre bien dans la condition avec l'opérateur && à la place de || 
+    if (this.id === undefined || this.id !== bill.id) { 
       this.id = bill.id
     }; 
     if (this.counter % 2 === 0) {
@@ -116,7 +123,6 @@ export default class {
      
     } else {
       $(`#open-bill${bill.id}`).css({ background: "#0D5AE5" });
-
       $(".dashboard-right-container div").html(`
         <div id="big-billed-icon" data-testid="big-billed-icon"> ${BigBilledIcon} </div>
       `);
@@ -165,14 +171,17 @@ export default class {
     }
    
     bills.forEach((bill) => {
-      $(`#open-bill${ bill.id }`).click((e) => {
-        e.preventDefault()
-        console.log("this.id=",this.id, "::::", "bill.id=",bill.id, "index=", index);
+      // On supprime l'évènement au click du ticket déjà ouvert
+      $(`#open-bill${bill.id}`).off("click"); 
+
+      $(`#open-bill${bill.id}`).click((e) => {
+        e.preventDefault();
+        console.log("this.id=", this.id, "::::", "bill.id=", bill.id, "index=", index);
         this.handleEditTicket(e, bill, bills);
-        // console.log(index);// l'index est bien modifié
-        // console.log(bill.id);// l'id reste le meme 
       });
-    });
+        
+      });
+    
     
 
     return bills;
