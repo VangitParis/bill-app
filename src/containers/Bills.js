@@ -35,7 +35,26 @@ export default class {
       );
     $("#modaleFile").modal("show");
   };
-
+/**
+ * Retrieve a sorted list of bills from the store.
+ *
+ * @returns {Promise<Array<Object>>} A Promise that resolves to an array of bills.
+ * The array is sorted in descending order based on the `date` property of each bill object.
+ * Each bill object in the array has the following properties:
+ * - id: string
+ * - vat: string
+ * - fileUrl: string
+ * - status: string
+ * - type: string
+ * - commentary: string
+ * - name: string
+ * - fileName: string
+ * - date: Date
+ * - amount: number
+ *
+ * If any bill in the store has corrupted data for the `date` property, it will be logged as an error,
+ * and the date will be returned as it is without formatting.
+ */
   getBills = () => {
     if (this.store) {
       return this.store
@@ -55,7 +74,7 @@ export default class {
               console.log(e, "for", doc);
               return {
                 ...doc,
-                date: formatDate(doc.date),
+                date: doc.date,
                 status: formatStatus(doc.status),
               };
             }

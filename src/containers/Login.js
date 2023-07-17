@@ -26,7 +26,7 @@ export default class Login {
     this.localStorage.setItem("user", JSON.stringify(user))
     this.login(user)
       .catch(
-        (err) => this.createUser(user)
+        (err) => console.error(this.createUser(user))
       )
       .then(() => {
         this.onNavigate(ROUTES_PATH['Bills'])
@@ -35,7 +35,7 @@ export default class Login {
         this.document.body.style.backgroundColor="#fff"
       })
   }
-
+  // bug résolu sur la connexion admin, le data-testid était "employee" => remplacé par "admin"
   handleSubmitAdmin = e => {
     e.preventDefault()
     const user = {

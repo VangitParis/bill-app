@@ -33,7 +33,6 @@ export default class NewBill {
   handleChangeFile = (e) => {
     e.preventDefault();
     const file = document.querySelector(`input[data-testid="file"]`).files[0];
-    
     const filePath = e.target.value.split(/\\/g);
     const fileName = filePath[filePath.length - 1];
 
@@ -52,7 +51,7 @@ export default class NewBill {
         `input[data-testid="file"]`
       );
       inputFile.parentNode.insertBefore(errorMessage, inputFile.nextSibling);
-      file.value = "";
+      file.value = '';
       return;
     } 
     const formData = new FormData();

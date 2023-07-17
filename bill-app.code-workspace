@@ -24,6 +24,7 @@
 		"jest.disabledWorkspaceFolders": [
 			"bill-app",
 			"Billed-app-FR-Back"
-		]
+		],
+		"eslint.format.enable": true
 	}
 }
