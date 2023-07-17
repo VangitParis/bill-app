@@ -5,6 +5,13 @@ import { ROUTES_PATH } from "../constants/routes.js";
 import USERS_TEST from "../constants/usersTest.js";
 import Logout from "./Logout.js";
 
+/**
+ *
+ * @param {*} data
+ * @param {*} status
+ * @returns
+ */
+
 export const filteredBills = (data, status) => {
   return data && data.length
     ? data.filter((bill) => {
@@ -14,7 +21,7 @@ export const filteredBills = (data, status) => {
         if (typeof jest !== "undefined") {
           selectCondition = bill.status === status;
         } else {
-        /* istanbul ignore next */
+          /* istanbul ignore next */
           // in prod environment
           const userEmail = JSON.parse(localStorage.getItem("user")).email;
           selectCondition =
@@ -101,10 +108,12 @@ export default class {
     }
   };
   handleEditTicket(e, bill, bills) {
-    if (this.counter === undefined || this.id !== bill.id) { this.counter = 0 };
-    if (this.id === undefined || this.id !== bill.id) { 
-      this.id = bill.id
-    }; 
+    if (this.counter === undefined || this.id !== bill.id) {
+      this.counter = 0;
+    }
+    if (this.id === undefined || this.id !== bill.id) {
+      this.id = bill.id;
+    }
     if (this.counter % 2 === 0) {
       bills.forEach((b) => {
         $(`#open-bill${b.id}`).css({ background: "#0D5AE5" });
@@ -113,10 +122,8 @@ export default class {
       $(".dashboard-right-container div").html(DashboardFormUI(bill));
       $(".vertical-navbar").css({ height: "150vh" });
       this.counter++;
-     
     } else {
       $(`#open-bill${bill.id}`).css({ background: "#0D5AE5" });
-
       $(".dashboard-right-container div").html(`
         <div id="big-billed-icon" data-testid="big-billed-icon"> ${BigBilledIcon} </div>
       `);
@@ -126,7 +133,6 @@ export default class {
     $("#icon-eye-d").click(this.handleClickIconEye);
     $("#btn-accept-bill").click((e) => this.handleAcceptSubmit(e, bill));
     $("#btn-refuse-bill").click((e) => this.handleRefuseSubmit(e, bill));
- 
   }
 
   handleAcceptSubmit = (e, bill) => {
@@ -163,15 +169,17 @@ export default class {
       $(`#arrow-icon${this.index}`).css({ transform: "rotate(90deg)" });
       $(`#status-bills-container${this.index}`).html("");
     }
-   
-    const currentBillsFilter = filteredBills(bills, getStatus(this.index));
-		currentBillsFilter.forEach((bill) => {
-			$(`#open-bill${bill.id}`)
-				.off("click")
-				.on("click", (e) => this.handleEditTicket(e, bill, bills));
-		});
-    
-    
+
+    bills.forEach((bill) => {
+      // On supprime l'évènement au click du ticket déjà ouvert
+      $(`#open-bill${bill.id}`).off("click");
+
+      $(`#open-bill${bill.id}`).click((e) => {
+        e.preventDefault();
+        console.log("this.id=", this.id, "::::", "bill.id=", bill.id, "index=",index);
+        this.handleEditTicket(e, bill, bills);
+      });
+    });
 
     return bills;
   }
