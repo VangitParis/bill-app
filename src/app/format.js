@@ -13,8 +13,14 @@ export const formatStatus = (status) => {
       return "En attente"
     case "accepted":
       return "Accepté"
+      return "Accepté"
+      return "Accepté"
+      return "Accepté"
     case "refused":
-      return "Refused"
+    case "refused":
+    case "refused":
+    case "refused":
+      return "Refusé"
   }
 }
 

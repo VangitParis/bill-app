@@ -176,7 +176,15 @@ export default class {
 
       $(`#open-bill${bill.id}`).click((e) => {
         e.preventDefault();
-        console.log("this.id=", this.id, "::::", "bill.id=", bill.id, "index=",index);
+        console.log(
+          "this.id=",
+          this.id,
+          "::::",
+          "bill.id=",
+          bill.id,
+          "index=",
+          index
+        );
         this.handleEditTicket(e, bill, bills);
       });
     });
@@ -207,6 +215,7 @@ export default class {
 
   // not need to cover this function by tests
   /* istanbul ignore next */
+  
   updateBill = (bill) => {
     if (this.store) {
       return this.store

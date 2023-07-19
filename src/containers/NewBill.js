@@ -33,15 +33,14 @@ export default class NewBill {
   handleChangeFile = (e) => {
     e.preventDefault();
     const file = document.querySelector(`input[data-testid="file"]`).files[0];
+    // console.log(file);
     const filePath = e.target.value.split(/\\/g);
     const fileName = filePath[filePath.length - 1];
-
     // Vérifier l'extension du fichier
     const fileExtension = this.getFileExtension(fileName);
     const isValid = this.isValidFileExtension(fileExtension);
- 
+  
     if (!isValid) {
-      console.error("Invalid file extension");
       const errorMessage = document.createElement("span");
       errorMessage.textContent =
         "Attention vous devez entrer un fichier png, jpg, jpeg ou gif."; 
@@ -51,14 +50,16 @@ export default class NewBill {
         `input[data-testid="file"]`
       );
       inputFile.parentNode.insertBefore(errorMessage, inputFile.nextSibling);
-      file.value = '';
+      
       return;
     } 
+  
+    // Continuer uniquement si le fichier est valide
     const formData = new FormData();
     const email = JSON.parse(localStorage.getItem("user")).email;
     formData.append("file", file);
     formData.append("email", email);
-   
+  
     this.store
       .bills()
       .create({
@@ -68,19 +69,21 @@ export default class NewBill {
         },
       })
       .then(({ fileUrl, key }) => {
-          this.billId = key;
-          this.fileUrl = fileUrl;
-          this.fileName = fileName;
+        console.log(fileUrl);
+        this.billId = key;
+        this.fileUrl = fileUrl;
+        this.fileName = fileName;
       })
-      .catch((error) => (error));
+      .catch((error) => console.error("error", error));
   };
+  
 
   handleSubmit = (e) => {
     e.preventDefault();
-    console.log(
-      'e.target.querySelector(`input[data-testid="datepicker"]`).value',
-      e.target.querySelector(`input[data-testid="datepicker"]`).value
-    );
+    // console.log(
+    //   'e.target.querySelector(`input[data-testid="datepicker"]`).value',
+    //   e.target.querySelector(`input[data-testid="datepicker"]`).value
+    // );
     const email = JSON.parse(localStorage.getItem("user")).email;
     const bill = {
       email,
@@ -100,11 +103,14 @@ export default class NewBill {
       fileName: this.fileName,
       status: "pending",
     };
+    // console.log(bill.fileUrl);
+    // console.log(bill.fileName);
     this.updateBill(bill);
     this.onNavigate(ROUTES_PATH["Bills"]);
   };
 
   // not need to cover this function by tests
+ /* istanbul ignore next */
   updateBill = (bill) => {
     if (this.store) {
       this.store
