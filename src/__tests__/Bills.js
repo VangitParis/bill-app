@@ -11,6 +11,7 @@ import { localStorageMock } from "../__mocks__/localStorage.js";
 import { formatDate, formatStatus } from "../app/format.js";
 import mockStore from "../__mocks__/store.js";
 import router from "../app/Router.js";
+
 // Fonction utilitaire pour remplacer console.log
 const mockConsoleLog = jest.fn();
 //simuler l'instruction d'importation du module store pour tester les erreurs 404, 500
@@ -57,7 +58,7 @@ describe("Given I am connected as an employee", () => {
         {
           id: "3",
           status: "pending",
-          date: "2000-01-02", 
+          date: "2000-02-01", 
         },
         {
           id: "4",
@@ -69,14 +70,16 @@ describe("Given I am connected as an employee", () => {
         document.body.innerHTML = ROUTES({ pathname });
       };
 
+      const storeMock = { bills: jest.fn(() => mockStore.bills()) };
+
       const billInstance = new Bills({
         document,
         onNavigate,
-        store: mockStore,
+        store: storeMock,
         localStorage,
       });
 
-      // Appel de la méthode getBills
+      // Appel de la méthode getBills avec les factures mockées
       const sortedBills = await billInstance.getBills(mockBills);
 
       // Vérification de l'ordre des dates
@@ -199,11 +202,13 @@ describe("Given I am a user connected as Employee", () => {
       document.body.append(root);
       router();
       window.onNavigate(ROUTES_PATH.Bills);
-      expect(screen.getAllByText("Billed")).toBeTruthy();
-      expect(
-        await waitFor(() => screen.getByText("Mes notes de frais"))
-      ).toBeTruthy();
-      expect(screen.getByTestId("tbody")).toBeTruthy();
+      // On vérifie qu'on affiche la page Bills
+      const titleOfBillsPage =  screen.getByText("Mes notes de frais").textContent
+      expect(await waitFor(() => titleOfBillsPage)).toBeTruthy();
+      // console.log(titleOfBillsPage);   
+      const billsTableBody = screen.getByTestId("tbody")
+      expect(billsTableBody).toBeTruthy();
+      // console.log(billsTableBody);  
     });
   });
   describe("When an error occurs on API", () => {

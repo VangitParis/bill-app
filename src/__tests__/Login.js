@@ -116,11 +116,12 @@ describe("When I do fill fields in correct format and I click on employee button
   test("It should renders Bills page", () => {
     expect(screen.getAllByText("Mes notes de frais")).toBeTruthy();
   });
-  test("Then an error is caught in createUser Method", () => {
+  test("Then an error is caught in createUser Method", async () => {
     const html = LoginUI();
     document.body.innerHTML = html;
     const inputData = {
       type: "Employee",
+      name: "johndoe",
       email: "johndoe@email.com",
       password: "azerty",
     };
@@ -136,8 +137,9 @@ describe("When I do fill fields in correct format and I click on employee button
     const onNavigate = (pathname) => {
       document.body.innerHTML = ROUTES({ pathname });
     };
+    const createUserMock = jest.fn().mockRejectedValue(new Error("Test error"));
     const usersTestsMock = {
-      create: jest.fn(),
+      create: createUserMock,
     };
     const storeMock = {
       users: jest.fn().mockReturnValue(usersTestsMock),
@@ -150,13 +152,14 @@ describe("When I do fill fields in correct format and I click on employee button
       PREVIOUS_LOCATION,
       store: storeMock,
     });
- 
+  
     // On appel la méthode Update
-    const createUser = loginInstance.createUser(inputData);
-
+    const createUserPromise = loginInstance.createUser(inputData);
+  
     // Test de la gestion de l'erreur 'catch'
-    expect(createUser).toHaveBeenCalled()
+    await expect(createUserPromise).rejects.toThrow("err");
   });
+  
 });
 
 describe("Given that I am a user on login page", () => {
