@@ -1,0 +1,31 @@
+{
+	"folders": [
+		{
+			"name":"bill-app",
+			"path": ".."
+		},
+		{
+			"name": "Billed-app-FR-Front",
+			"path": "../Billed-app-FR-Front"
+		},
+		// {
+		// 	"name": "Billed-app-FR-Back ",
+		// 	"path": "../Billed-app-FR-Back "
+		// }
+	],
+	"settings": {
+		"sqltools.connections": [
+			{
+				"previewLimit": 50,
+				"driver": "SQLite",
+				"name": "database",
+				"database": "${workspaceFolder:bill-app}/Billed-app-FR-Back/database_dev.sqlite"
+			}
+		],
+		"jest.disabledWorkspaceFolders": [
+			"bill-app",
+			"Billed-app-FR-Back"
+		],
+		"eslint.format.enable": true
+	}
+}

@@ -10,7 +10,6 @@ import NewBill from "../containers/NewBill.js";
 import store from "../__mocks__/store.js";
 import mockStore from "../__mocks__/store";
 import router from "../app/Router";
-import { log } from "console";
 
 //simuler l'instruction d'importation du module store pour tester les erreurs 404, 500
 jest.mock("../app/store", () => mockStore);
@@ -197,7 +196,6 @@ describe("Given I am connected as an employee", () => {
         store: mockStore,
         localStorage: window.localStorage,
       });
-
       const handleSubmit = jest.fn(newBillInstance.handleSubmit);
       newBillInstance.fileName = "justificatif-billed.jpg";
 
@@ -205,11 +203,12 @@ describe("Given I am connected as an employee", () => {
       formNewBill.addEventListener("submit", handleSubmit);
       fireEvent.submit(formNewBill);
 
+   
       expect(handleSubmit).toHaveBeenCalled();
       const titleOfBillsPage =
         screen.getByText("Mes notes de frais").textContent;
       expect(titleOfBillsPage).toBeTruthy();
-      //  console.log(titleOfBillsPage);
+        console.log(titleOfBillsPage);
     });
     test("Then an error is caught in updateBill Method", () => {
       const html = NewBillUI();
@@ -245,6 +244,7 @@ describe("Given I am connected as an employee", () => {
 
       // Test de la gestion de l'erreur 'catch'
       expect(updateMock).toHaveBeenCalled();
+      console.log(updateMock.mock.calls);
     });
   });
 });
@@ -281,6 +281,7 @@ describe("Given I am a user connected as Employee", () => {
 
       // Définir les valeurs de fileUrl et fileName
       newBillInstance.fileUrl = "https://localhost:3456/images/test.jpg";
+      newBillInstance.key = "1234";
       newBillInstance.fileName = "justificatif-billed.jpg";
       // Remplir le formulaire avec des données de test
       const expenseTypeInput = screen.getByTestId("expense-type");
@@ -331,6 +332,20 @@ describe("Given I am a user connected as Employee", () => {
         status: "pending",
       });
       // console.log(updateBillSpy.mock.calls)
+
+      // On défini la promesse attendu après la requête POST (création de facture réussie)
+      const expectedBill = {
+        fileUrl: "https://localhost:3456/images/test.jpg",
+        key: "1234",
+      };
+      // Promesse
+      const billsPromise = mockStore.bills().create(expectedBill);
+
+      // Attendre que la promesse retournée par mockStore.bills().create() soit résolue
+      const bills = await billsPromise;
+
+      // Vérifier que la promesse a été résolue avec la valeur attendue
+      expect(bills).toEqual(expectedBill);
 
       // On vérifie que la redirection vers la page Bills a été effectuée après la soumission réussie
       const titleOfBillsPage =

@@ -2,3 +2,5 @@ node_modules
 coverage
 .idea
 .DS_Store
+.vscode
+.bill-app.code-workspace
