@@ -10,6 +10,7 @@ export default class NewBill {
       `form[data-testid="form-new-bill"]`
     );
     formNewBill.addEventListener("submit", this.handleSubmit);
+    this.isFormDataValid = false;
     const file = this.document.querySelector(`input[data-testid="file"]`);
     file.addEventListener("change", this.handleChangeFile);
     this.fileUrl = null;
@@ -32,7 +33,8 @@ export default class NewBill {
 
   handleChangeFile = async (e) => {
     e.preventDefault();
-    const file = this.document.querySelector(`input[data-testid="file"]`).files[0];
+    const file = this.document.querySelector(`input[data-testid="file"]`)
+      .files[0];
     // console.log(file);
     const filePath = e.target.value.split(/\\/g);
     const fileName = filePath[filePath.length - 1];
@@ -40,32 +42,7 @@ export default class NewBill {
     const fileExtension = this.getFileExtension(fileName);
     const isValid = this.isValidFileExtension(fileExtension);
 
-    if (isValid) {
-      // Continuer uniquement si le fichier est valide
-      const formData = new FormData();
-      const email = JSON.parse(localStorage.getItem("user")).email;
-      formData.append("file", file);
-      formData.append("email", email);
-    
-       
-      this.store
-        .bills()
-        .create({
-          data: formData,
-          headers: {
-            noContentType: true,
-          },
-        })
-        .then(({ fileUrl, key }) => {
-          this.billId = key;
-          this.fileUrl = fileUrl;
-          this.fileName = file.name;
-          console.log("Bill created:", key, fileUrl);
-        })
-        .catch((error) => error);
-    
-      
-    } else {
+    if (!isValid) {
       const errorMessage = document.createElement("span");
       errorMessage.textContent =
         "Attention vous devez entrer un fichier png, jpg, jpeg ou gif.";
@@ -74,9 +51,51 @@ export default class NewBill {
       const inputFile = document.querySelector(`input[data-testid="file"]`);
       inputFile.parentNode.insertBefore(errorMessage, inputFile.nextSibling);
       file.value = "";
+      this.isFormDataValid = false;
       return;
     }
+    // Continuer uniquement si le fichier est valide et le formulaire est soumis
+    const formData = new FormData();
+    const email = JSON.parse(localStorage.getItem("user")).email;
+    formData.append("file", file);
+    formData.append("email", email);
+
+    // Afficher un message d'erreur si le formulaire n'a pas été soumis
+    const errorMessage = document.createElement("span");
+    errorMessage.textContent =
+      "Attention vous devez soumettre le formulaire pour créer une facture.";
+    errorMessage.classList.add("error-message");
+    errorMessage.style.color = "red";
+    const inputFile = document.querySelector(`input[data-testid="file"]`);
+    //Effacer message d'erreur existant pour en insérer un nouveau
+    const errorMessageExisting = document.querySelector(".error-message");
+    file.value = "";
+    this.isFormDataValid = false;
+    if (errorMessageExisting) {
+      errorMessageExisting.remove();
+    } else {
+      inputFile.parentNode.insertBefore(errorMessage, inputFile.nextSibling);
+      file.value = "";
+      this.isFormDataValid = false;
+    }
+
+    this.store
+      .bills()
+      .create({
+        data: formData,
+        headers: {
+          noContentType: true,
+        },
+      })
+      .then(({ fileUrl, key }) => {
+        this.billId = key;
+        this.fileUrl = fileUrl;
+        this.fileName = file.name;
+        console.log("Bill created:", key, fileUrl);
+      })
+      .catch((error) => error);
   };
+
   handleSubmit = (e) => {
     e.preventDefault();
     // console.log(
@@ -84,49 +103,46 @@ export default class NewBill {
     //   e.target.querySelector(`input[data-testid="datepicker"]`).value
     // );
     const email = JSON.parse(localStorage.getItem("user")).email;
-
-    // Récupérer les valeurs des champs du formulaire
-    const type = e.target.querySelector(
-      `select[data-testid="expense-type"]`
-    ).value;
-    const name = e.target.querySelector(
-      `input[data-testid="expense-name"]`
-    ).value;
-    const amount = parseInt(
-      e.target.querySelector(`input[data-testid="amount"]`).value
-    );
-    const date = e.target.querySelector(
-      `input[data-testid="datepicker"]`
-    ).value;
-    const vat = e.target.querySelector(`input[data-testid="vat"]`).value;
-    const pct =
-      parseInt(e.target.querySelector(`input[data-testid="pct"]`).value) || 20;
-    const commentary = e.target.querySelector(
-      `textarea[data-testid="commentary"]`
-    ).value;
-    const fileUrl = this.fileUrl;
-    const fileName = this.fileName;
-    const status = "pending";
-
-    // Vérifiez que les champs obligatoires sont remplis correctement
     const bill = {
       email,
-      type,
-      name,
-      amount,
-      date,
-      vat,
-      pct,
-      commentary,
-      fileUrl,
-      fileName,
-      status,
-    };
-    if (type || name || amount || date || vat || pct || fileUrl || fileName) {
-      return this.updateBill(bill) && this.onNavigate(ROUTES_PATH["Bills"]);
-    }
-  };
+      // Récupérer les valeurs des champs du formulaire
+      type: e.target.querySelector(`select[data-testid="expense-type"]`).value,
+      name: e.target.querySelector(`input[data-testid="expense-name"]`).value,
+      amount: parseInt(
+        e.target.querySelector(`input[data-testid="amount"]`).value
+      ),
+      date: e.target.querySelector(`input[data-testid="datepicker"]`).value,
+      vat: e.target.querySelector(`input[data-testid="vat"]`).value,
+      pct:
+        parseInt(e.target.querySelector(`input[data-testid="pct"]`).value) ||
+        20,
+      commentary: e.target.querySelector(`textarea[data-testid="commentary"]`)
+        .value,
 
+      fileUrl: this.fileUrl,
+      fileName: this.fileName,
+
+      status: "pending",
+    };
+    // Empêcher l'envoi du formulaire si au moins une des valeurs requises est fausse
+    if (
+      !bill.type ||
+      !bill.amount ||
+      !bill.date ||
+      !bill.email ||
+      !bill.name ||
+      !bill.vat ||
+      !bill.pct ||
+      (!bill.fileUrl && !bill.fileName)
+    ) {
+      console.log(bill.date);
+      console.error("Veuillez verifier les saisies du formulaire");
+      return;
+    }
+    this.isFormDataValid = true;
+    this.updateBill(bill);
+    this.onNavigate(ROUTES_PATH["Bills"]);
+  };
   // not need to cover this function by tests
   /* istanbul ignore next */
   updateBill = (bill) => {
