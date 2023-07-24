@@ -69,7 +69,7 @@ export default class NewBill {
     
     //Effacer message d'erreur existant pour en insérer un nouveau
     const errorMessageExisting = document.querySelector(".error-message");
-    // file.value = "";
+    
     this.isFormDataValid = false;
     if (errorMessageExisting) {
       errorMessageExisting.remove();
@@ -139,26 +139,25 @@ export default class NewBill {
 
       status: "pending",
     };
-    // // Empêcher l'envoi du formulaire si au moins une des valeurs requises est fausse
-    // if (
-    //   !bill.type ||
-    //   !bill.amount ||
-    //   !bill.date ||
-    //   !bill.email ||
-    //   !bill.name ||
-    //   !bill.vat ||
-    //   !bill.pct
-    // ) {
-    //   console.error("Veuillez verifier les saisies du formulaire");
-    //   this.isFormDataValid = false; 
-    //   console.log(this.isFormDataValid);
-    //   return;
-    // }
+    // Empêcher l'envoi du formulaire si au moins une des valeurs requises est fausse
+    if (
+      !bill.type ||
+      !bill.amount ||
+      !bill.date ||
+      !bill.email ||
+      !bill.name ||
+      !bill.vat ||
+      !bill.pct
+    ) {
+      console.error("Veuillez verifier les saisies du formulaire");
+      this.isFormDataValid = false; 
+      console.log(this.isFormDataValid);
+      return;
+    }
     this.isFormDataValid = true;
     this.updateBill(bill);
-    if (this.isFormDataValid) {
-      this.onNavigate(ROUTES_PATH["Bills"]);
-    }
+    this.onNavigate(ROUTES_PATH["Bills"]);
+    
   };
   // not need to cover this function by tests
   /* istanbul ignore next */

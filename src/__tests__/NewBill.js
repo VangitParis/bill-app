@@ -264,6 +264,46 @@ describe("Given I am connected as an employee", () => {
       expect(billsTableBody).toBeTruthy();
       // console.log(billsTableBody);
     });
+    test("Then form submission should be prevented for invalid or missing values", async () => {
+      const html = NewBillUI();
+      document.body.innerHTML = html;
+      Object.defineProperty(window, "localStorage", {
+        value: {
+          getItem: jest.fn(() =>
+            JSON.stringify({ email: "employee@test.tld", type: "Employee" })
+          ),
+          setItem: jest.fn(),
+        },
+        writable: true,
+      });
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      };
+      const newBillInstance = new NewBill({
+        document,
+        onNavigate,
+        store: mockStore,
+        localStorage: window.localStorage,
+      });
+
+      // Espionner la fonction console.error pour enregistrer les messages d'erreur
+      const consoleErrorSpy = jest.spyOn(console, "error");
+
+      // Simuler la soumission du formulaire avec des valeurs invalides
+      const formNewBill = screen.getByTestId("form-new-bill");
+      fireEvent.submit(formNewBill);
+
+      const handleSubmit = jest.fn(newBillInstance.handleSubmit);
+      // Vérifier que handleSubmit n'a pas été appelé
+      expect(handleSubmit).not.toHaveBeenCalled();
+
+      // Vérifier que console.error a été appelé avec le message attendu
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "Veuillez verifier les saisies du formulaire"
+      );
+      console.log(consoleErrorSpy.mock.calls);
+    });
+
     test("Then an error is caught in updateBill Method", async () => {
       const html = NewBillUI();
       document.body.innerHTML = html;
