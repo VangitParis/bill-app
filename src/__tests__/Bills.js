@@ -58,7 +58,7 @@ describe("Given I am connected as an employee", () => {
         {
           id: "3",
           status: "pending",
-          date: "2000-02-01", 
+          date: "2000-02-01",
         },
         {
           id: "4",
@@ -203,12 +203,13 @@ describe("Given I am a user connected as Employee", () => {
       router();
       window.onNavigate(ROUTES_PATH.Bills);
       // On vérifie qu'on affiche la page Bills
-      const titleOfBillsPage =  screen.getByText("Mes notes de frais").textContent
+      const titleOfBillsPage =
+        screen.getByText("Mes notes de frais").textContent;
       expect(await waitFor(() => titleOfBillsPage)).toBeTruthy();
-      // console.log(titleOfBillsPage);   
-      const billsTableBody = screen.getByTestId("tbody")
+      //  console.log(titleOfBillsPage);
+      const billsTableBody = screen.getByTestId("tbody");
       expect(billsTableBody).toBeTruthy();
-      // console.log(billsTableBody);  
+      // console.log(billsTableBody);
     });
   });
   describe("When an error occurs on API", () => {

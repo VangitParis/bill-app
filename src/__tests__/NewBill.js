@@ -32,7 +32,7 @@ describe("Given I am connected as an employee", () => {
       expect(user.status).toBe("connected");
     });
 
-    test("Then I add file with an else extension than .png, .jpg, .jpeg or gif ", async () => {
+    test("Then I add file with another extension than .png, .jpg, .jpeg or gif ", async () => {
       const html = NewBillUI();
       document.body.innerHTML = html;
       // localStorage should be populated with form data
@@ -85,7 +85,7 @@ describe("Given I am connected as an employee", () => {
       // On Vérifie si le message d'erreur est ajouté au DOM
       expect(document.querySelector(errorMessageSelector)).not.toBeNull();
       expect(document.querySelector(errorMessageSelector).textContent).toBe(
-        "Attention vous devez entrer un fichier png, jpg, jpeg ou gif."
+        "Attention vous devez entrer un fichier png, jpg, jpeg ou gif pour envoyer une facture."
       );
     });
     test("Then handleChange uses FormData to add file and email", async () => {
@@ -301,7 +301,7 @@ describe("Given I am connected as an employee", () => {
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         "Veuillez verifier les saisies du formulaire"
       );
-      console.log(consoleErrorSpy.mock.calls);
+      // console.log(consoleErrorSpy.mock.calls);
     });
 
     test("Then an error is caught in updateBill Method", async () => {
@@ -370,7 +370,7 @@ describe("Given I am a user connected as Employee", () => {
 
       // Vérifier que la promesse a été résolue avec la valeur attendue
       expect(bills).toEqual(expectedBill);
-      console.log(bills);
+      // console.log(bills);
     });
   });
   describe("When an error occurs on API", () => {

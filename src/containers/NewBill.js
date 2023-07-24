@@ -50,7 +50,7 @@ export default class NewBill {
     if (!isValid) {
       const errorMessage = document.createElement("span");
       errorMessage.textContent =
-        "Attention vous devez entrer un fichier png, jpg, jpeg ou gif.";
+        "Attention vous devez entrer un fichier png, jpg, jpeg ou gif pour envoyer une facture.";
       errorMessage.classList.add("error-message");
       errorMessage.style.color = "red";
       const inputFile = document.querySelector(`input[data-testid="file"]`);
@@ -65,22 +65,19 @@ export default class NewBill {
     formData.append("file", file);
     formData.append("email", email);
 
-   
-    
     //Effacer message d'erreur existant pour en insérer un nouveau
     const errorMessageExisting = document.querySelector(".error-message");
-    
     this.isFormDataValid = false;
     if (errorMessageExisting) {
       errorMessageExisting.remove();
     } else {
-       // Afficher un message d'erreur si le formulaire n'a pas été soumis
-    const errorMessage = document.createElement("span");
-    errorMessage.textContent =
-      "Attention vous devez soumettre le formulaire pour créer une facture.";
-    errorMessage.classList.add("error-message");
-    errorMessage.style.color = "red";
-    const inputFile = document.querySelector(`input[data-testid="file"]`);
+      // Afficher un message d'erreur si le formulaire n'a pas été soumis
+      const errorMessage = document.createElement("span");
+      errorMessage.textContent =
+        "Attention vous devez soumettre le formulaire pour créer une facture.";
+      errorMessage.classList.add("error-message");
+      errorMessage.style.color = "red";
+      const inputFile = document.querySelector(`input[data-testid="file"]`);
       inputFile.parentNode.insertBefore(errorMessage, inputFile.nextSibling);
       this.isFormDataValid = false;
     }
@@ -147,17 +144,16 @@ export default class NewBill {
       !bill.email ||
       !bill.name ||
       !bill.vat ||
-      !bill.pct
+      !bill.pct ||
+      !bill.fileName
     ) {
       console.error("Veuillez verifier les saisies du formulaire");
-      this.isFormDataValid = false; 
-      console.log(this.isFormDataValid);
+      this.isFormDataValid = false;
       return;
     }
     this.isFormDataValid = true;
     this.updateBill(bill);
     this.onNavigate(ROUTES_PATH["Bills"]);
-    
   };
   // not need to cover this function by tests
   /* istanbul ignore next */
