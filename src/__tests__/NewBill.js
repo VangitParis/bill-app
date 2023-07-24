@@ -175,84 +175,7 @@ describe("Given I am connected as an employee", () => {
 
   // Test Retour sur la page Bills (#employee/bills)
   describe("When I submit a correct form", () => {
-    test("Then I should be redirected to Bills page", () => {
-      const html = NewBillUI();
-      document.body.innerHTML = html;
-      Object.defineProperty(window, "localStorage", {
-        value: {
-          getItem: jest.fn(() =>
-            JSON.stringify({ email: "employee@test.tld", type: "Employee" })
-          ),
-          setItem: jest.fn(),
-        },
-        writable: true,
-      });
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname });
-      };
-      const newBillInstance = new NewBill({
-        document,
-        onNavigate,
-        store: mockStore,
-        localStorage: window.localStorage,
-      });
-      const handleSubmit = jest.fn(newBillInstance.handleSubmit);
-      newBillInstance.fileName = "justificatif-billed.jpg";
-
-      const formNewBill = screen.getByTestId("form-new-bill");
-      formNewBill.addEventListener("submit", handleSubmit);
-      fireEvent.submit(formNewBill);
-
-   
-      expect(handleSubmit).toHaveBeenCalled();
-      const titleOfBillsPage =
-        screen.getByText("Mes notes de frais").textContent;
-      expect(titleOfBillsPage).toBeTruthy();
-        console.log(titleOfBillsPage);
-    });
-    test("Then an error is caught in updateBill Method", () => {
-      const html = NewBillUI();
-      document.body.innerHTML = html;
-      Object.defineProperty(window, "localStorage", {
-        value: {
-          getItem: jest.fn(() =>
-            JSON.stringify({ email: "employee@test.tld", type: "Employee" })
-          ),
-          setItem: jest.fn(),
-        },
-        writable: true,
-      });
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname });
-      };
-      const updateMock = jest.fn().mockRejectedValue(new Error("Test error"));
-      const billsMock = {
-        update: updateMock,
-      };
-      const storeMock = {
-        bills: jest.fn().mockReturnValue(billsMock),
-      };
-      const newBillInstanceCatchError = new NewBill({
-        document,
-        onNavigate,
-        store: storeMock,
-        localStorage: localStorageMock,
-      });
-
-      // On appel la méthode Update
-      newBillInstanceCatchError.updateBill({ storeMock });
-
-      // Test de la gestion de l'erreur 'catch'
-      expect(updateMock).toHaveBeenCalled();
-      console.log(updateMock.mock.calls);
-    });
-  });
-});
-
-// Test d'intégration POST
-describe("Given I am a user connected as Employee", () => {
-  describe("When I navigate to newBill's page", () => {
-    test("Then create a new bill with mock API POST", async () => {
+    test("Then I should be redirected to Bills page", async () => {
       const html = NewBillUI();
       document.body.innerHTML = html;
       Object.defineProperty(window, "localStorage", {
@@ -332,21 +255,6 @@ describe("Given I am a user connected as Employee", () => {
         status: "pending",
       });
       // console.log(updateBillSpy.mock.calls)
-
-      // On défini la promesse attendu après la requête POST (création de facture réussie)
-      const expectedBill = {
-        fileUrl: "https://localhost:3456/images/test.jpg",
-        key: "1234",
-      };
-      // Promesse
-      const billsPromise = mockStore.bills().create(expectedBill);
-
-      // Attendre que la promesse retournée par mockStore.bills().create() soit résolue
-      const bills = await billsPromise;
-
-      // Vérifier que la promesse a été résolue avec la valeur attendue
-      expect(bills).toEqual(expectedBill);
-
       // On vérifie que la redirection vers la page Bills a été effectuée après la soumission réussie
       const titleOfBillsPage =
         screen.getByText("Mes notes de frais").textContent;
@@ -355,6 +263,74 @@ describe("Given I am a user connected as Employee", () => {
       const billsTableBody = screen.getByTestId("tbody");
       expect(billsTableBody).toBeTruthy();
       // console.log(billsTableBody);
+    });
+    test("Then an error is caught in updateBill Method", async () => {
+      const html = NewBillUI();
+      document.body.innerHTML = html;
+      Object.defineProperty(window, "localStorage", {
+        value: {
+          getItem: jest.fn(() =>
+            JSON.stringify({ email: "employee@test.tld", type: "Employee" })
+          ),
+          setItem: jest.fn(),
+        },
+        writable: true,
+      });
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      };
+      const updateMock = jest.fn().mockRejectedValue(new Error("Test error"));
+      const billsMock = {
+        update: updateMock,
+      };
+      const storeMock = {
+        bills: jest.fn().mockReturnValue(billsMock),
+      };
+      const newBillInstanceCatchError = new NewBill({
+        document,
+        onNavigate,
+        store: storeMock,
+        localStorage: localStorageMock,
+      });
+
+      // On appel la méthode Update
+      newBillInstanceCatchError.updateBill({ storeMock });
+
+      // Test de la gestion de l'erreur 'catch'
+      expect(updateMock).toHaveBeenCalled();
+      //console.log(updateMock.mock.calls);
+    });
+  });
+});
+
+// Test d'intégration POST
+describe("Given I am a user connected as Employee", () => {
+  describe("When I navigate to newBill's page", () => {
+    test("Then create a new bill with mock API POST", async () => {
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ type: "Employee", email: "e@e" })
+      );
+      const root = document.createElement("div");
+      root.setAttribute("id", "root");
+      document.body.append(root);
+      router();
+
+      // On défini la promesse attendue après la requête POST (création de facture réussie)
+      const expectedBill = {
+        fileUrl: "https://localhost:3456/images/test.jpg",
+        key: "1234",
+      };
+
+      // Promesse
+      const billsPromise = mockStore.bills().create(expectedBill);
+
+      // Attendre que la promesse retournée par mockStore.bills().create() soit résolue
+      const bills = await billsPromise;
+
+      // Vérifier que la promesse a été résolue avec la valeur attendue
+      expect(bills).toEqual(expectedBill);
+      console.log(bills);
     });
   });
   describe("When an error occurs on API", () => {
