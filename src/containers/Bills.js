@@ -40,7 +40,7 @@ export default class {
  *
  * @returns {Promise<Array<Object>>} A Promise that resolves to an array of bills.
  */
-  getBills = () => {
+  getBills = async() => {
     if (this.store) {
       return this.store
         .bills()

@@ -18,13 +18,18 @@ export default class NewBill {
     this.billId = null;
     new Logout({ document, localStorage, onNavigate });
   }
-
+  /**
+   *
+   * @param {string} fileName le nom du fichier avec son extension
+   * @returns {string} l'extension du fichier
+   */
   getFileExtension(fileName) {
     return fileName.split(".").pop().toLowerCase();
   }
 
   /**
-   * @return {boolean}
+   * @param {string} fileExtension l'extension de fichier à vérifier
+   * @return {boolean} true si l'extension de fichier est valide
    */
   isValidFileExtension(fileExtension) {
     const allowedExtensions = ["png", "jpg", "jpeg", "gif"];
@@ -88,7 +93,7 @@ export default class NewBill {
         this.billId = key;
         this.fileUrl = fileUrl;
         this.fileName = file.name;
-        console.log("Bill created:", key, fileUrl);
+        // console.log("Bill created:", key, fileUrl);
       })
       .catch((error) => error);
   };
@@ -143,6 +148,7 @@ export default class NewBill {
     this.isFormDataValid = true;
     this.updateBill(bill);
     this.onNavigate(ROUTES_PATH["Bills"]);
+    
   };
   // not need to cover this function by tests
   /* istanbul ignore next */

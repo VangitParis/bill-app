@@ -8,12 +8,9 @@ import Bills from "../containers/Bills.js";
 import { bills } from "../fixtures/bills.js";
 import { ROUTES, ROUTES_PATH } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
-import { formatDate, formatStatus } from "../app/format.js";
 import mockStore from "../__mocks__/store.js";
 import router from "../app/Router.js";
 
-// Fonction utilitaire pour remplacer console.log
-const mockConsoleLog = jest.fn();
 //simuler l'instruction d'importation du module store pour tester les erreurs 404, 500
 jest.mock("../app/store", () => mockStore);
 
@@ -38,8 +35,12 @@ describe("Given I am connected as an employee", () => {
       const windowIcon = screen.getByTestId("icon-window");
       //to-do write expect expression
       expect(windowIcon.classList.contains("active-icon")).toBe(true);
+      console.log(
+        `Expected: true\nReceived: ${windowIcon.classList.contains(
+          "active-icon"
+        )}`
+      );
     });
-
     test("Then bills should be ordered from earliest to latest", async () => {
       const html = BillsUI({ data: bills.date });
       document.body.innerHTML = html;
@@ -48,17 +49,15 @@ describe("Given I am connected as an employee", () => {
         document.body.innerHTML = ROUTES({ pathname });
       };
 
-      const storeMock = { bills: jest.fn(() => mockStore.bills()) };
-
       const billInstance = new Bills({
         document,
         onNavigate,
-        store: storeMock,
+        store: mockStore,
         localStorage,
       });
 
       // Appel de la méthode getBills avec les factures mockées
-      const sortedMockedBills = await billInstance.getBills(storeMock);
+      const sortedMockedBills = await billInstance.getBills(mockStore);
       // Vérification de l'ordre des dates
       const dates = sortedMockedBills.map((bill) => bill.date);
       // Utilisez la fonction getBills pour obtenir directement le tableau trié
