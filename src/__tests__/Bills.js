@@ -42,7 +42,7 @@ describe("Given I am connected as an employee", () => {
       );
     });
     test("Then bills should be ordered from earliest to latest", async () => {
-      const html = BillsUI({ data: bills.date });
+      const html = BillsUI({ data: bills });
       document.body.innerHTML = html;
 
       const onNavigate = (pathname) => {
@@ -60,7 +60,7 @@ describe("Given I am connected as an employee", () => {
       const sortedMockedBills = await billInstance.getBills(mockStore);
       // Vérification de l'ordre des dates
       const dates = sortedMockedBills.map((bill) => bill.date);
-      // Utilisez la fonction getBills pour obtenir directement le tableau trié
+      // Utiliser la fonction getBills pour obtenir directement le tableau trié
       const sortedBills = await billInstance.getBills();
       // Promesse de tri des dates dans getBills
       const datesSortedAndFormatted = sortedBills.map((bill) => bill.date);
