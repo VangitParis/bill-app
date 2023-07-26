@@ -7,7 +7,6 @@ import { ROUTES, ROUTES_PATH } from "../constants/routes";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import NewBillUI from "../views/NewBillUI.js";
 import NewBill from "../containers/NewBill.js";
-import store from "../__mocks__/store.js";
 import mockStore from "../__mocks__/store";
 import router from "../app/Router";
 
@@ -173,7 +172,7 @@ describe("Given I am connected as an employee", () => {
     });
   });
 
-  // Test Retour sur la page Bills (#employee/bills)
+  // Test Intégration Retour sur la page Bills (#employee/bills)
   describe("When I submit a correct form", () => {
     test("Then I should be redirected to Bills page", async () => {
       const html = NewBillUI();
@@ -304,6 +303,7 @@ describe("Given I am connected as an employee", () => {
       // console.log(consoleErrorSpy.mock.calls);
     });
 
+    //test unitaire : scenario où une erreur est attrapée dans la méthode "updateBill
     test("Then an error is caught in updateBill Method", async () => {
       const html = NewBillUI();
       document.body.innerHTML = html;
@@ -319,6 +319,7 @@ describe("Given I am connected as an employee", () => {
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname });
       };
+      // mock de update pour rejeter une promesse avec une erreur
       const updateMock = jest.fn().mockRejectedValue(new Error("Test error"));
       const billsMock = {
         update: updateMock,

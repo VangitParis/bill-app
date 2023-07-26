@@ -114,6 +114,7 @@ export default class {
     if (this.id === undefined || this.id !== bill.id) {
       this.id = bill.id;
     }
+    // this.counter %2 : si pair => liste de tickets repliée si impair => liste dépliée
     if (this.counter % 2 === 0) {
       bills.forEach((b) => {
         $(`#open-bill${b.id}`).css({ background: "#0D5AE5" });
@@ -158,7 +159,7 @@ export default class {
   handleShowTickets(e, bills, index) {
     if (this.counter === undefined || this.index !== index) this.counter = 0;
     if (this.index === undefined || this.index !== index) this.index = index;
-
+    console.log(this.counter);
     if (this.counter % 2 === 0) {
       $(`#arrow-icon${this.index}`).css({ transform: "rotate(0deg)" });
       $(`#status-bills-container${this.index}`).html(
@@ -215,7 +216,7 @@ export default class {
 
   // not need to cover this function by tests
   /* istanbul ignore next */
-  
+
   updateBill = (bill) => {
     if (this.store) {
       return this.store

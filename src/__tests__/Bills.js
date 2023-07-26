@@ -41,31 +41,9 @@ describe("Given I am connected as an employee", () => {
     });
 
     test("Then bills should be ordered from earliest to latest", async () => {
-      const html = BillsUI({ data: bills });
+      const html = BillsUI({ data: bills.date });
       document.body.innerHTML = html;
-      // Mock des données de facture
-      const mockBills = [
-        {
-          id: "1",
-          status: "refused",
-          date: "2022-06-01", // Facture la plus ancienne
-        },
-        {
-          id: "2",
-          status: "accepted",
-          date: "2023-01-15",
-        },
-        {
-          id: "3",
-          status: "pending",
-          date: "2000-02-01",
-        },
-        {
-          id: "4",
-          status: "accepted",
-          date: "2023-05-20", // Facture la plus récente
-        },
-      ];
+
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname });
       };
@@ -80,17 +58,16 @@ describe("Given I am connected as an employee", () => {
       });
 
       // Appel de la méthode getBills avec les factures mockées
-      const sortedBills = await billInstance.getBills(mockBills);
-
+      const sortedMockedBills = await billInstance.getBills(storeMock);
       // Vérification de l'ordre des dates
-      const dates = sortedBills.map((bill) => bill.date);
-      const isSorted = dates.every((date, index) => {
-        if (index === 0) return true;
-        return (a, b) => new Date(b.date) - new Date(a.date);
-      });
+      const dates = sortedMockedBills.map((bill) => bill.date);
+      // Utilisez la fonction getBills pour obtenir directement le tableau trié
+      const sortedBills = await billInstance.getBills();
+      // Promesse de tri des dates dans getBills
+      const datesSortedAndFormatted = sortedBills.map((bill) => bill.date);
 
-      // Assertion de l'ordre des dates
-      expect(isSorted).toBe(true);
+      expect(dates).toEqual(datesSortedAndFormatted);
+      console.log(`Expected: ${datesSortedAndFormatted}\nReceived: ${dates}`);
     });
 
     //test unitaire pour savoir si l'évènement sur le bouton pour une nouvelle note frais est déclenché

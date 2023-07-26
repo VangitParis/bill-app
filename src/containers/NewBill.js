@@ -31,16 +31,10 @@ export default class NewBill {
     return allowedExtensions.includes(fileExtension);
   }
 
-  // isValidDate(dateString) {
-  //   const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-  //   return dateRegex.test(dateString)
-  // }
-
   handleChangeFile = async (e) => {
     e.preventDefault();
     const file = this.document.querySelector(`input[data-testid="file"]`)
       .files[0];
-    // console.log(file);
     const filePath = e.target.value.split(/\\/g);
     const fileName = filePath[filePath.length - 1];
     // Vérifier l'extension du fichier
@@ -110,11 +104,6 @@ export default class NewBill {
       `input[data-testid="datepicker"]`
     ).value;
 
-    // if (!this.isValidDate(date)) {
-    //   console.error("Format de date incorrect");
-    //   //Ne pas envoyer la facture
-    //   return;
-    // }
     const bill = {
       email,
       // Récupérer les valeurs des champs du formulaire

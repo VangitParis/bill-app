@@ -2,7 +2,7 @@
   "scripts": {
     "test": "jest --coverage --noStackTrace --silent",
     "dev": "live-server --port=8080 --ignore=.",
-    "test-unique": "jest src/__tests__/NewBill.js"
+    "test-unique": "jest src/__tests__/Bills.js"
   },
   "jest": {
     "verbose": false,
