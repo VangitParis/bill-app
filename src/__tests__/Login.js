@@ -216,14 +216,14 @@ describe("Given that I am a user on login page", () => {
       const inputEmailUser = screen.getByTestId("admin-email-input");
       fireEvent.change(inputEmailUser, { target: { value: inputData.email } });
       expect(inputEmailUser.value).toBe(inputData.email);
-      console.log(`Expected: ${inputEmailUser.value}\nReceived: ${inputData.email}`);
+      // console.log(`Expected: ${inputEmailUser.value}\nReceived: ${inputData.email}`);
 
       const inputPasswordUser = screen.getByTestId("admin-password-input");
       fireEvent.change(inputPasswordUser, {
         target: { value: inputData.password },
       });
       expect(inputPasswordUser.value).toBe(inputData.password);
-      console.log(`Expected: ${inputPasswordUser.value}\nReceived: ${inputData.password}`);
+      // console.log(`Expected: ${inputPasswordUser.value}\nReceived: ${inputData.password}`);
 
 
       const form = screen.getByTestId("form-admin");
@@ -273,7 +273,7 @@ describe("Given that I am a user on login page", () => {
 
     test("It should renders HR dashboard page", () => {
       expect(screen.queryByText("Validations")).toBeTruthy();
-      console.log(`Expected: Validations\nReceived: Validations`);
+      // console.log(`Expected: Validations\nReceived: Validations`);
     });
   });
 });

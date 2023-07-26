@@ -99,7 +99,7 @@ describe("Given I am connected as an employee", () => {
       newBillButton.addEventListener("click", handleClickNewBill);
       // Simulation du clic sur le bouton
       fireEvent.click(newBillButton);
-      // Assertion de l'appelle de la méthode handleClickNewBill
+      // Assertion de l'appel de la méthode handleClickNewBill
       expect(handleClickNewBill).toHaveBeenCalled();
     });
   });
@@ -136,6 +136,7 @@ describe("Given I am connected as an employee", () => {
   });
   describe("When event on handleClickIconEye", () => {
     test("Then it should update modal content and show the modal", () => {
+      // mock de la fonction jquery
       $.fn.modal = jest.fn();
       const html = BillsUI({ data: bills });
       document.body.innerHTML = html;
