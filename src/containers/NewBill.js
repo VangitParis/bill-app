@@ -148,7 +148,6 @@ export default class NewBill {
     this.isFormDataValid = true;
     this.updateBill(bill);
     this.onNavigate(ROUTES_PATH["Bills"]);
-    
   };
   // not need to cover this function by tests
   /* istanbul ignore next */
