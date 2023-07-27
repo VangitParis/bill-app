@@ -152,14 +152,13 @@ describe("When I do fill fields in correct format and I click on employee button
       PREVIOUS_LOCATION,
       store: storeMock,
     });
-  
+
     // On appel la méthode Update
     const createUserPromise = loginInstance.createUser(inputData);
-  
+
     // Test de la gestion de l'erreur 'catch'
     await expect(createUserPromise).rejects.toThrow("err");
   });
-  
 });
 
 describe("Given that I am a user on login page", () => {
@@ -224,7 +223,6 @@ describe("Given that I am a user on login page", () => {
       });
       expect(inputPasswordUser.value).toBe(inputData.password);
       // console.log(`Expected: ${inputPasswordUser.value}\nReceived: ${inputData.password}`);
-
 
       const form = screen.getByTestId("form-admin");
 
